@@ -1,17 +1,9 @@
 
-import { _decorator, Component, CCInteger, Label, Node } from 'cc';
+import { _decorator, Component, instantiate, Node, RichText, CCFloat } from 'cc';
 // import { QUIZ_TIME,QUIZ_TOTAL } from './Config';
 const { ccclass, property } = _decorator;
 
-
-function random(lower, upper) {
-  return Math.floor(Math.random() * (upper - lower)) + lower
-}
-
-enum QuestionOperator {
-  Add,
-  Minus,
-}
+let NEW_PLOT_SCROLL_TIME:number = 0.2
 
 @ccclass('GameController')
 export class GameController extends Component {
@@ -22,158 +14,43 @@ export class GameController extends Component {
     // @property
     // serializableDummy = 0;
 
-    @property({ type: Label })
-    private lbQ = null
+    @property({ type: Node })
+    private textLayout = null;
 
     @property({ type: Node })
-    private resultNode = null;
+    private textLb = null;
 
-    @property({ type: CCInteger })
-    private _time = 0;
+    @property({ type: Node })
+    private scroll = null;
 
-    @property({})
-    private _gameStartFlag = false;
-
-    @property({ type: CCInteger })
-
-    @property({ type: CCInteger })
-    private _count = 0;
-
-    @property({ type: CCInteger })
-    private _score = 0;
-
-    @property({ type: CCInteger })
-    private _result = -1;
-
-    start () {
-      // this.addAnswerListener()
+    onLoad () {
+      this.addAnswerListener()
     }
 
-    //generate 3 wrong answers
-    //exclude number below zero
-    // genAnswers (result:number) {
-    //   let min = result - 5
-    //   if(min < 0){
-    //     min = 0
-    //   }
-    //   let max = min + 10
-    //   let arr = []
-    //   for(let i = min; i <= max; i++){
-    //     if(i != result){
-    //       arr.push(i)
-    //     }
-    //   }
-    //   let head = 0
-    //   let count = arr.length
-    //   for(let i = 1; i <= 3; i++){
-    //     let roll = random(head,count)
-    //     let tmp = arr[roll]
-    //     arr[roll] = arr[head]
-    //     arr[head] = tmp
-    //     head++
-    //   }
-    //   let answers = []
-    //   answers[1] = arr[1]
-    //   answers[2] = arr[2]
-    //   answers[3] = arr[3]
-    //   answers[4] = result
-    //   //sort
-    //   answers.sort((a, b) => a - b)
-    //   return answers
-    // }
+    addAnswerListener () {
+      let asNode = this.node.getChildByName("Answers")
+      let asList = asNode.children
+      for (let elem of asList) {
+        let btn = elem.getChildByName('btn')
+        btn.on('chose_answer', (option) => {
+          this.onChose(option)
+        });
+      }
+    }
 
-    // genQuestion () {
-    //   this._count++
+    onChose (option) {
+      console.log(option)
+      //TODO:find the next plot and update
+      // this.updatePlot("New Add" + option)
+    }
 
-    //   let a:number = random(1,10)
-    //   let b:number = random(1,10)
-    //   let op = Math.random() > 0.5 ? QuestionOperator.Add : QuestionOperator.Minus
-    //   let result:number = 0
-    //   if(op == QuestionOperator.Minus){
-    //     if(a < b ){
-    //       let tmp = a
-    //       a = b
-    //       b = tmp
-    //     }
-    //     result = a - b
-    //   }else{
-    //     result = a + b
-    //   }
-    //   this._result = result
-    //   let opChar = op == QuestionOperator.Minus ? " - " : " + "
-    //   let str:string = `${a}${opChar}${b} = ?`
-    //   this.lbQ.string = str
-
-    //   let answers = this.genAnswers(result)
-    //   this.setAnswers(answers)
-
-    //   this._time = 0
-    //   this._gameStartFlag = true
-    // }
-
-    // setAnswers(answers:Array<number>) {
-    //   let asNode = this.node.getChildByName("Answers")
-    //   let asList = asNode.children
-    //   for (let i in asList) {
-    //     let n = asList[i]
-    //     let btn = n.getChildByName('btn')
-    //     let lb = btn.getChildByName('text')
-    //     lb = lb.getComponent("cc.Label")
-    //     let as = answers[i]
-    //     lb.string = as
-    //     let script = btn.getComponent('AnswerBtn')
-    //     script.setOption(as)
-
-    //     let prog = n.getChildByName('prog')
-    //     script = prog.getComponent("ProgressCircle");
-    //     script.startCountDown(QUIZ_TIME)
-    //   }
-    // }
-
-    // addAnswerListener () {
-    //   let asNode = this.node.getChildByName("Answers")
-    //   let asList = asNode.children
-    //   for (let elem of asList) {
-    //     let btn = elem.getChildByName('btn')
-    //     btn.on('chose_answer', (option) => {
-    //       this.onChose(option)
-    //     });
-    //   }
-    // }
-
-    // onChose (option) {
-    //   let code = option == this._result ? 0 : 1
-    //   if(code == 0){
-    //     this._score++
-    //   }
-    //   this.node.active = false
-    //   this.resultNode.active = true
-    //   let script = this.resultNode.getComponent('ResultCheck')
-    //   script.setResult(code,this._score,this._count,this._total)
-    // }
-
-    // startQuiz () {
-    //   this._count = 0
-    //   this._total = QUIZ_TOTAL
-    //   this._score = 0
-
-    //   this.genQuestion()
-    // }
-
-
-    update (deltaTime: number) {
-      // if(this._gameStartFlag){
-      //   this._time = this._time + deltaTime;
-      //   if(this._time >= QUIZ_TIME){
-      //     this._gameStartFlag = false
-      //     let script = this.resultNode.getComponent('ResultCheck')
-      //     script.setResult(2,this._score,this._count,this._total)
-      //     this.node.active = false
-      //     this.resultNode.active = true
-      //   }
-      //   // console.log("Quiz Update:" + this._time);
-      // }
-      //   // [4]
+    updatePlot (newTxt: string) {
+      let node = instantiate(this.textLb);
+      let rt:RichText = node.getComponent("cc.RichText")
+      rt.string = newTxt
+      this.textLayout.addChild(node)
+      let sc = this.scroll.getComponent("cc.ScrollView")
+      sc.scrollToBottom(NEW_PLOT_SCROLL_TIME)
     }
 }
 

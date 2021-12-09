@@ -36,10 +36,6 @@ export class StartGame extends Component {
     // }
 
     onClick(){
-      // console.log("click？");
-      // console.log(this);
-      // console.log(this.btn);
-      // this.btn.x = 50,
       this.titleNode.active = false;
       this.gameNode.active = true;
 
