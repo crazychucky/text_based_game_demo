@@ -1,5 +1,5 @@
 
-import { _decorator, Component, instantiate, Node, RichText, CCFloat } from 'cc';
+import { _decorator, Component, instantiate, Node, RichText, Label, resources, JsonAsset, CCInteger } from 'cc';
 // import { QUIZ_TIME,QUIZ_TOTAL } from './Config';
 const { ccclass, property } = _decorator;
 
@@ -21,10 +21,23 @@ export class GameController extends Component {
     private textLb = null;
 
     @property({ type: Node })
+    private nextBtn = null;
+
+    @property({ type: Node })
     private scroll = null;
+
+    @property({ type: Map })
+    private _plotMap = null
+
+    @property({ type: CCInteger })
+    private _step = 1
 
     onLoad () {
       this.addAnswerListener()
+    }
+
+    start () {
+      this._loadAndStart()
     }
 
     addAnswerListener () {
@@ -38,8 +51,90 @@ export class GameController extends Component {
       }
     }
 
+    _loadAndStart () {
+      if(this._plotMap != null){
+        this._startGame()
+        return
+      }
+      resources.load("configs/plot", JsonAsset, (err, JsonAsset) => {
+        if (err) {
+          console.log(err)
+          return
+        }
+        let json = JsonAsset.json;
+        console.log(json)
+        let list = json["plot"]
+        let plotMap = new Map()
+        for (let entry of list) {
+          let t = new Map()
+          t["plot"] = entry["plot"]
+          let branch = entry["branch"]
+          if (branch != null){
+            let ba = branch.split("|") 
+            let answerList = []
+            for (let choiceData of ba) {
+              let tmp = choiceData.split(",") 
+              let choice = new Map()
+              choice["des"] = tmp[0]
+              choice["goto"] = tmp[1]
+              answerList.push(choice)
+            }
+            t["branch"] = answerList
+          }
+          t["end"] = entry["end"]
+          let kid:number = entry["kid"]
+          plotMap[kid] = t
+        }
+        this._plotMap = plotMap
+        this._startGame()
+      })
+    }
+
+    _startGame () {
+      this._step = 1
+      let data = this._plotMap[this._step]
+      let rt:RichText = this.textLb.getComponent("cc.RichText")
+      rt.string = data.plot
+      this._checkChoice(data.branch)
+    }
+
+    onNext () {
+      this._step = this._step + 1
+      let data = this._plotMap[this._step]
+      this.updatePlot(data.plot)
+      this._checkChoice(data.branch)
+    }
+
+    _checkChoice (branches) {
+      let asNode = this.node.getChildByName("Answers")
+      if(branches == null){
+        asNode.active = false
+        this.nextBtn.active = true
+        return
+      }
+      this.nextBtn.active = false
+      let asList = asNode.children
+      for (let i in asList) {
+        let n = asList[i]
+        let choice = branches[i]
+        if(choice == null){
+          n.active = false
+        }else{
+          n.active = true
+          let btn = n.getChildByName('btn')
+          let tmp = btn.getChildByName('text')
+          let lb = tmp.getComponent("cc.Label")
+          lb.string = choice.des
+
+          let script = btn.getComponent('AnswerBtn')
+          script.setOption(choice.goto)
+        }
+      }
+      asNode.active = true
+    }
+
     onChose (option) {
-      console.log(option)
+      // console.log(option)
       //TODO:find the next plot and update
       // this.updatePlot("New Add" + option)
     }
