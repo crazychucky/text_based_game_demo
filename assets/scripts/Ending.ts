@@ -11,13 +11,10 @@ export class Ending extends Component {
     // @property
     // serializableDummy = 0;
     @property({ type: Label })
-    private lb1 = null;
+    private lbTitle = null;
 
     @property({ type: Label })
-    private lb2 = null;
-
-    @property({ type: Label })
-    private lb3 = null;
+    private lbText = null;
 
     @property({ type: Node })
     private continueNode = null;
@@ -41,6 +38,15 @@ export class Ending extends Component {
       this.scheduleOnce(function() {
         this.continueNode.active = true
       }, 3);
+    }
+
+    public setEnding (kid,des) {
+      let da = des.split("|") 
+      let lb:Label = this.lbText.getComponent("cc.Label")
+      lb.string = da[0]
+
+      lb = this.lbTitle.getComponent("cc.Label")
+      lb.string = "Ending " + (kid - 1000) + ":" + da[1]
     }
 
     // update (deltaTime: number) {

@@ -21,6 +21,9 @@ export class GameController extends Component {
     private textLb = null;
 
     @property({ type: Node })
+    private endingNode = null;
+
+    @property({ type: Node })
     private nextBtn = null;
 
     @property({ type: Node })
@@ -62,7 +65,6 @@ export class GameController extends Component {
           return
         }
         let json = JsonAsset.json;
-        console.log(json)
         let list = json["plot"]
         let plotMap = new Map()
         for (let entry of list) {
@@ -73,10 +75,10 @@ export class GameController extends Component {
             let ba = branch.split("|") 
             let answerList = []
             for (let choiceData of ba) {
-              let tmp = choiceData.split(",") 
+              let tmp = choiceData.split("#") 
               let choice = new Map()
               choice["des"] = tmp[0]
-              choice["goto"] = tmp[1]
+              choice["goto"] = Number(tmp[1])
               answerList.push(choice)
             }
             t["branch"] = answerList
@@ -91,6 +93,7 @@ export class GameController extends Component {
     }
 
     _startGame () {
+      this.endingNode.active = false
       this._step = 1
       let data = this._plotMap[this._step]
       let rt:RichText = this.textLb.getComponent("cc.RichText")
@@ -99,20 +102,30 @@ export class GameController extends Component {
     }
 
     onNext () {
+      this.nextBtn.active = false
       this._step = this._step + 1
+      this._refresh()
+    }
+
+    _refresh () {
       let data = this._plotMap[this._step]
       this.updatePlot(data.plot)
-      this._checkChoice(data.branch)
+      let choiceFlag:Boolean = this._checkChoice(data.branch)
+      let endFlag:Boolean = this._checkEnding(this._step)
+      if((!choiceFlag)&&(!endFlag)){
+        this.nextBtn.active = true
+      }
+      else{ 
+        this.nextBtn.active = false
+      }
     }
 
     _checkChoice (branches) {
       let asNode = this.node.getChildByName("Answers")
       if(branches == null){
         asNode.active = false
-        this.nextBtn.active = true
-        return
+        return false
       }
-      this.nextBtn.active = false
       let asList = asNode.children
       for (let i in asList) {
         let n = asList[i]
@@ -131,12 +144,12 @@ export class GameController extends Component {
         }
       }
       asNode.active = true
+      return true
     }
 
     onChose (option) {
-      // console.log(option)
-      //TODO:find the next plot and update
-      // this.updatePlot("New Add" + option)
+      this._step = option
+      this._refresh()
     }
 
     updatePlot (newTxt: string) {
@@ -146,6 +159,22 @@ export class GameController extends Component {
       this.textLayout.addChild(node)
       let sc = this.scroll.getComponent("cc.ScrollView")
       sc.scrollToBottom(NEW_PLOT_SCROLL_TIME)
+    }
+
+    _checkEnding (kid) {
+      let data = this._plotMap[kid]
+      if(data.end == null){
+        return false
+      }
+      kid = Number(data.end)
+      data = this._plotMap[kid]
+
+      this.node.active = false
+      this.endingNode.active = true
+
+      let script = this.endingNode.getComponent('Ending')
+      script.setEnding(kid,data.plot)
+      return true
     }
 }
 
