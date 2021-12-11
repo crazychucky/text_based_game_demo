@@ -27,6 +27,9 @@ export class GameController extends Component {
     private nextBtn = null;
 
     @property({ type: Node })
+    private _lastLb = null;
+
+    @property({ type: Node })
     private scroll = null;
 
     @property({ type: Map })
@@ -38,9 +41,26 @@ export class GameController extends Component {
     onLoad () {
       this.addAnswerListener()
     }
+    onEnable () {
+      let asNode = this.node.getChildByName("Answers")
+      asNode.active = false
+    }
 
-    start () {
-      this._loadAndStart()
+    _clearLog () {
+      let arr = []
+      let asList = this.textLayout.children
+      for (let elem of asList) {
+        if(elem!=this.textLb){
+          arr.push(elem)
+        }
+      }
+      for (let elem of arr) {
+        elem.destroy()
+      }
+      if(this.textLb!= null){
+        let rt:RichText = this.textLb.getComponent("cc.RichText")
+        rt.string = ""
+      }
     }
 
     addAnswerListener () {
@@ -54,9 +74,11 @@ export class GameController extends Component {
       }
     }
 
-    _loadAndStart () {
+    startGame () {
+      this._clearLog()
+
       if(this._plotMap != null){
-        this._startGame()
+        this._startGameAfterLoad()
         return
       }
       resources.load("configs/plot", JsonAsset, (err, JsonAsset) => {
@@ -88,17 +110,28 @@ export class GameController extends Component {
           plotMap[kid] = t
         }
         this._plotMap = plotMap
-        this._startGame()
+        this._startGameAfterLoad()
       })
     }
 
-    _startGame () {
+    _startGameAfterLoad () {
       this.endingNode.active = false
       this._step = 1
+      let uoc = this.textLb.getComponent("cc.UIOpacityComponent")
+      uoc.opacity = 255
       let data = this._plotMap[this._step]
+      this._lastLb = this.textLb
       let rt:RichText = this.textLb.getComponent("cc.RichText")
       rt.string = data.plot
-      this._checkChoice(data.branch)
+
+      let choiceFlag:Boolean = this._checkChoice(data.branch)
+      let endFlag:Boolean = this._checkEnding(this._step)
+      if((!choiceFlag)&&(!endFlag)){
+        this.nextBtn.active = true
+      }
+      else{ 
+        this.nextBtn.active = false
+      }
     }
 
     onNext () {
@@ -153,10 +186,19 @@ export class GameController extends Component {
     }
 
     updatePlot (newTxt: string) {
-      let node = instantiate(this.textLb);
+      if(this._lastLb != null) {
+        let uoc = this._lastLb.getComponent("cc.UIOpacityComponent")
+        uoc.opacity = 160
+      }
+      let node = instantiate(this.textLb)
       let rt:RichText = node.getComponent("cc.RichText")
       rt.string = newTxt
       this.textLayout.addChild(node)
+      this._lastLb = node
+
+      let uoc = this._lastLb.getComponent("cc.UIOpacityComponent")
+      uoc.opacity = 255
+
       let sc = this.scroll.getComponent("cc.ScrollView")
       sc.scrollToBottom(NEW_PLOT_SCROLL_TIME)
     }

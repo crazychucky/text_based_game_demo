@@ -26,9 +26,9 @@ export class StartGame extends Component {
     private endingNode = null;
 
     onLoad() {
-      this.titleNode.active = true;
-      this.gameNode.active = false;
-      this.endingNode.active = false;
+      // this.titleNode.active = true;
+      // this.gameNode.active = false;
+      // this.endingNode.active = false;
     }
 
     // update (deltaTime: number) {
@@ -40,8 +40,8 @@ export class StartGame extends Component {
       this.gameNode.active = true;
 
       // // 获取脚本组件
-      // let _quizController = this.quizNode.getComponent('QuizController');
-      // _quizController.startQuiz()
+      let _gameController = this.gameNode.getComponent('GameController');
+      _gameController.startGame()
     }
 }
 
