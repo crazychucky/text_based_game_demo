@@ -509,7 +509,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -455,
+      "x": -453,
       "y": -25.2,
       "z": 0
     },
@@ -546,7 +546,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 917,
+      "width": 905,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -566,15 +566,18 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "Main Text",
+    "_string": "Text",
     "_horizontalAlign": 0,
     "_fontSize": 36,
-    "_maxWidth": 917,
+    "_maxWidth": 905,
     "_fontFamily": "Arial",
     "_font": null,
     "_isSystemFontUsed": true,
-    "_userDefinedFont": null,
-    "_cacheMode": 0,
+    "_userDefinedFont": {
+      "__uuid__": "777508db-83ff-48ba-b36e-904335b4902e",
+      "__expectedType__": "cc.TTFFont"
+    },
+    "_cacheMode": 2,
     "_imageAtlas": null,
     "_handleTouchEvent": true,
     "_id": "f4VMgkyehJMIGOo0fnkIM/"
@@ -591,7 +594,7 @@
     "_alignFlags": 40,
     "_target": null,
     "_left": 15,
-    "_right": 8,
+    "_right": 16,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
@@ -631,7 +634,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 940,
+      "width": 936,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -652,8 +655,8 @@
     "__prefab": null,
     "_alignFlags": 40,
     "_target": null,
-    "_left": 0,
-    "_right": 0,
+    "_left": 2,
+    "_right": 2,
     "_top": 117.5,
     "_bottom": -202.89999999999998,
     "_horizontalCenter": 0,
@@ -1339,7 +1342,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -95,
+      "y": -100,
       "z": 0
     }
   },
@@ -1464,7 +1467,7 @@
     "value": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -155,
+      "y": -165,
       "z": 0
     }
   },
@@ -1531,7 +1534,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 960,
-      "height": 180
+      "height": 190
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1568,7 +1571,7 @@
     "_paddingTop": 10,
     "_paddingBottom": 0,
     "_spacingX": 0,
-    "_spacingY": 10,
+    "_spacingY": 15,
     "_verticalDirection": 1,
     "_horizontalDirection": 0,
     "_constraint": 0,
@@ -2720,7 +2723,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 291.4,
+      "width": 532.2,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2756,7 +2759,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Game Demo",
+    "_string": "Text-Base Game Demo",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,

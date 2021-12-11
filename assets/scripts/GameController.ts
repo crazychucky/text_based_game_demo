@@ -125,8 +125,7 @@ export class GameController extends Component {
       rt.string = data.plot
 
       let choiceFlag:Boolean = this._checkChoice(data.branch)
-      let endFlag:Boolean = this._checkEnding(this._step)
-      if((!choiceFlag)&&(!endFlag)){
+      if(!choiceFlag){
         this.nextBtn.active = true
       }
       else{ 
@@ -135,6 +134,10 @@ export class GameController extends Component {
     }
 
     onNext () {
+      let endFlag:Boolean = this._checkEnding(this._step)
+      if(endFlag){
+        return
+      }
       this.nextBtn.active = false
       this._step = this._step + 1
       this._refresh()
@@ -144,8 +147,7 @@ export class GameController extends Component {
       let data = this._plotMap[this._step]
       this.updatePlot(data.plot)
       let choiceFlag:Boolean = this._checkChoice(data.branch)
-      let endFlag:Boolean = this._checkEnding(this._step)
-      if((!choiceFlag)&&(!endFlag)){
+      if(!choiceFlag){
         this.nextBtn.active = true
       }
       else{ 
