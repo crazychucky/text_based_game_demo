@@ -2723,7 +2723,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 532.2,
+      "width": 660.85,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2759,7 +2759,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Text-Base Game Demo",
+    "_string": "Text Adventure Game Demo",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
